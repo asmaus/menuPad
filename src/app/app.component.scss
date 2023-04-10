@@ -1,0 +1,32 @@
+.footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 80px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	$squareWidth: 50px;
+	$squareWidthHover: 70px;
+
+	.square {
+		background-color: #42a4f5;
+		border-radius: 5px;
+		width: $squareWidth;
+		height: $squareWidth;
+		transition: all 0.2s ease-in-out;
+
+		&:not(:first-child) {
+			margin-left: 10px;
+		}
+
+		&:hover {
+			cursor: pointer;
+			width: $squareWidthHover;
+			height: $squareWidthHover;
+			;
+		}
+	}
+}

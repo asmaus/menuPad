@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+/**
+ *
+ *
+ * @export
+ * @class LoggerService
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -16,6 +22,13 @@ export class LoggerService {
 
   constructor() {}
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} [param]
+   * @memberof LoggerService
+   */
   public info(message: string, param?: any): void {
     console.log(
       `%c${message}`,
@@ -24,6 +37,13 @@ export class LoggerService {
     );
   }
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} [param]
+   * @memberof LoggerService
+   */
   public success(message: string, param?: any): void {
     console.log(
       `%c${message}`,
@@ -32,6 +52,13 @@ export class LoggerService {
     );
   }
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} [param]
+   * @memberof LoggerService
+   */
   public warning(message: string, param?: any): void {
     console.log(
       `%c${message}`,
@@ -40,6 +67,13 @@ export class LoggerService {
     );
   }
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @param {*} [param]
+   * @memberof LoggerService
+   */
   public error(message: string, param?: any): void {
     console.log(
       `%c${message}`,

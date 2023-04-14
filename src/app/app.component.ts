@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomObserverService } from './custom-observer.service';
-import { LoggerService } from './logger.service';
+import { CustomObserverService } from './services/custom-observer.service';
+import { LoggerService } from './services/logger.service';
 import {
   combineLatest,
   concatMap,

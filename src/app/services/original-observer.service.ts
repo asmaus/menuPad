@@ -4,9 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class OriginalObserverService {
-  constructor() {}
-
-  public observable2(error: boolean = false): Promise<void> {
+  public observable2(error = false): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       if (!error) {
         resolve();

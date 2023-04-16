@@ -20,8 +20,6 @@ export class LoggerService {
   private fontFamily = 'Segoe ui';
   private fontWeight = 'light';
 
-  constructor() {}
-
   /**
    *
    *

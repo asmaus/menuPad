@@ -6,9 +6,9 @@ import { OriginalObserverService } from './original-observer.service';
   providedIn: 'root',
 })
 export class CustomObserverService {
-  constructor(private originalObserverSrv: OriginalObserverService) {}
+  constructor(private originalObserverSrv: OriginalObserverService) { }
 
-  public observable2(error: boolean = false): Observable<boolean> {
+  public observable2(error = false): Observable<boolean> {
     return from(this.originalObserverSrv.observable2(error)).pipe(
       map(() => true)
     );

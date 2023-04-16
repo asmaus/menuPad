@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CustomObserverService } from './services/custom-observer.service';
 import { LoggerService } from './services/logger.service';
 import {
-  combineLatest,
   concatMap,
   delay,
   forkJoin,
   from,
-  map,
   of,
   tap,
 } from 'rxjs';

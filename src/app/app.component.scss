@@ -29,6 +29,7 @@ $side_bar_width: 200px;
 .footer {
 	position: fixed;
 	bottom: 0;
+	// bottom: -80px;
 	width: 100%;
 	height: $footer_height;
 
@@ -36,8 +37,14 @@ $side_bar_width: 200px;
 	justify-content: center;
 	align-items: center;
 
+	// transition: transform 0.3s ease-out;
+
 	$squareWidth: 50px;
 	$squareWidthHover: 70px;
+
+	// &:hover {
+	// 	transform: translateY(-80px);
+	//   }
 
 	.square {
 		background-color: #42a4f5;

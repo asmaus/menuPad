@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     //#region 1
-    const observable2$ = this.observerSrv.observable2(false);
+    const observable2$ = this.observerSrv.observable2();
 
     observable2$
       .pipe(

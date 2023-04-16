@@ -1,8 +1,36 @@
+$header_height: 60px;
+$footer_height: 80px;
+$main_min_height: calc(100vh - $header_height - $footer_height);
+
+$side_bar_width: 200px;
+
+
+.header {
+	background-color: #42a4f5;
+	height: $header_height;
+}
+
+.main {
+	display: flex;
+	flex-direction: row;
+	min-height: $main_min_height;
+
+	.side-bar {
+		background-color: #1565c0;
+		width: $side_bar_width;
+	}
+
+	.content {
+		background-color: #90caf9;
+		width: calc(100% - $side_bar_width);
+	}
+}
+
 .footer {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	height: 80px;
+	height: $footer_height;
 
 	display: flex;
 	justify-content: center;

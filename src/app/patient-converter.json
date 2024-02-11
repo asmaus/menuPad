@@ -1,0 +1,19 @@
+{
+  "name": "nombre",
+  "surname": "apellidos",
+  "referer": {
+    "nameReferer": "referidorNombre",
+    "surnameReferer": "referidorApellidos"
+  },
+  "center": {
+    "nameCenter": "centro.nombreCentro",
+    "aliasCenter": "centro.aliasCentro"
+  },
+  "builder": {
+    "patern": {
+      "pg": {
+        "pageName": "pagina"
+      }
+    }
+  }
+}

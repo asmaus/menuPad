@@ -32,10 +32,12 @@ $side_bar_width: 200px;
 	// bottom: -80px;
 	width: 100%;
 	height: $footer_height;
+	min-height: $footer_height;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	overflow-x: auto;
 
 	// transition: transform 0.3s ease-out;
 
@@ -50,7 +52,9 @@ $side_bar_width: 200px;
 		background-color: #42a4f5;
 		border-radius: 5px;
 		width: $squareWidth;
+		min-width: $squareWidth;
 		height: $squareWidth;
+		min-height: $squareWidth;
 		transition: all 0.2s ease-in-out;
 
 		&:not(:first-child) {

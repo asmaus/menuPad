@@ -8,7 +8,7 @@ export class PruebaDirective {
   private element: any;
 
   constructor(private e: ElementRef) {
-    console.warn('directiva funcionando', e);
+    // console.warn('directiva funcionando', e);
     this.element = e.nativeElement;
     this.setStyles();
   }

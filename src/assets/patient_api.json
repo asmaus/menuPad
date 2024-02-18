@@ -1,0 +1,106 @@
+{
+  "id": 1015,
+  "guid": "06d502c8-98f3-4c8b-ae08-835b277ccbd0",
+  "selfClientId": 1060,
+  "historyNumber": "1014",
+  "name": "Javier",
+  "surnames": "Abád Sanchez",
+  "identificationDocumentType": 0,
+  "identificationDocumentNumber": "19652314X           ",
+  "passportCountryId": null,
+  "address": "Calle Mayor 147",
+  "postalCode": "08005",
+  "mobilePhone": "635214520",
+  "phoneNumber1": "934587741",
+  "phoneNumber2": null,
+  "fax": null,
+  "email": "abadjavi@email.com",
+  "wildcard1": "Vecino de la Dra. Garcia",
+  "wildcard2": null,
+  "wildcard3": null,
+  "wildcard4": null,
+  "wildcard5": null,
+  "wildcard6": null,
+  "wildcard7": null,
+  "birthDate": "1980-03-06T00:00:00",
+  "gender": "H",
+  "notes": null,
+  "registrationDate": "2017-05-09T00:00:00",
+  "allowsGdpr": true,
+  "allowsLopd": true,
+  "allowsSms": false,
+  "allowsBots": false,
+  "allowsEmail": true,
+  "allowsPostalCard": true,
+  "allowsMailing": false,
+  "allowsInformation": false,
+  "identificationDocumentReadingState": 0,
+  "identificationDocumentReadingDate": "2019-01-16T09:00:17.427",
+  "identificationDocumentReadingUserId": 0,
+  "originRefererText": null,
+  "numberOfSons": null,
+  "discount": null,
+  "inactiveDate": null,
+  "inactiveReason": null,
+  "exitus": null,
+  "notLocalizable": false,
+  "derived": false,
+  "defaultRateId": 3,
+  "defaultClientId": 1060,
+  "odontogramType": 3,
+  "centerId": 2,
+  "center": {
+    "id": 2,
+    "guid": "0df893eb-0431-44f4-9b1b-e64109ad3a2c",
+    "code": "CDTEST",
+    "name": "CD. TEST",
+    "description": "Clínica TEST Dental"
+  },
+  "collaborator": {
+    "id": 3,
+    "name": "Angel",
+    "surnames": "Fernandez Casado"
+  },
+  "assistant": {
+    "id": 8,
+    "name": "Laura",
+    "surnames": "Bueno Ferran"
+  },
+  "adviser": {
+    "id": 6,
+    "name": "ALBA",
+    "surnames": "MACIAS MARQUEZ"
+  },
+  "civilStatus": null,
+  "originReferer": {
+    "id": 5,
+    "description": "Hospital Universitario Dexeus"
+  },
+  "targetReferer": null,
+  "provenance": {
+    "id": 1,
+    "description": "Facebook"
+  },
+  "patientReferer": null,
+  "profession": null,
+  "situationStatus": null,
+  "town": {
+    "id": 10,
+    "description": "BARCELONA",
+    "provinceId": 16,
+    "countryId": 1,
+    "province": {
+      "id": 16,
+      "description": "BARCELONA"
+    },
+    "country": {
+      "id": 1,
+      "description": "ESPAÑA"
+    }
+  },
+  "version": 6,
+  "createdBy": null,
+  "created": "0001-01-01T00:00:00",
+  "lastModifiedBy": 0,
+  "lastModified": null
+}

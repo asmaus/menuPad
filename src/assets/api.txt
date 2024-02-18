@@ -1,0 +1,5 @@
+paciente:
+https://main.dev.gesdenone.com/gesden/backend/api/tenant/4e6b4461-eac3-443b-80b9-6e2e609ee48b/filiacion/centros/2/pacientes/1015
+
+patient:
+https://main.dev.gesdenone.com/gesdenone/backend/api/v1/tenant/4e6b4461-eac3-443b-80b9-6e2e609ee48b/center/0df893eb-0431-44f4-9b1b-e64109ad3a2c/patients/1015

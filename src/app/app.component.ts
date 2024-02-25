@@ -41,8 +41,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     this.castPaciente();
-    console.log('paciente: ', this.paciente);
     console.log('patient: ', this.patient);
+    console.log('paciente: ', this.paciente);
   }
 
   private castPaciente(property?: string, mapping?: any): void {

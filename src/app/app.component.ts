@@ -81,6 +81,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log('flattenedJson: ', flattenedJson);
 
     const flattenedPaciente = this.flattenApiObject(this.paciente);
+    this.downloadFile(flattenedPaciente);
     console.log('flattenedPaciente: ', flattenedPaciente);
   }
 
@@ -283,5 +284,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     return result;
+  }
+
+  private downloadFile(flattenedJson: any): void {
+    const jsonData = JSON.stringify(flattenedJson);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'flattenedJson.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   }
 }

@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   private paciente: any = new Paciente();
   private patient: any = new Patient();
   private mapping = mappingJSON as any;
+  private delimiterChar = '.';
 
   public constructor(
     private logger: LoggerService,
@@ -45,42 +46,75 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.log('paciente: ', this.paciente);
   }
 
+  /** esta función itera todos los nodos del json de conversión. Busca el equivalente
+   *  en castellano de la propiedad en inglés. Si el equivalente en castellano es un
+   *  objeto anidado se llama a si misma.
+   */
   private castPaciente(property?: string, mapping?: any): void {
+    /** Inicialmente los parámetros property y mapping no se informan. Solo se
+     *  informan en las llamadas recursivas.
+     */
+    // console.error('property: ', property);
+    // console.warn('mapping: ', mapping);
     let patient = this.patient;
 
+    /** Si property existe es que se ha llamado a si misma. */
     if (property) {
-      const propertySplit = property.split('.');
+      const propertySplit = property.split(this.delimiterChar);
 
+      /** Verifica si el nodo resultante es sencillo o anidado. */
+      /** ¿? */
       if (propertySplit.length > 1) {
         for (const part of propertySplit) {
           patient = patient[part];
+          console.warn('patient: ', patient);
         }
       } else {
         patient = this.patient[property];
+        console.warn('patient: ', patient);
       }
     }
 
+    console.error('mapping: ', this.mapping);
+    /** Si mapping no existe es que el equivalente en castellano no es un objeto
+     *  anidado. Es decir, el nodo en inglés equivale a un nodo sencillo en castellano.
+     */
     if (!mapping) {
       mapping = this.mapping;
     }
 
+    /** Itera los nodos en inglés y obtiene la correlación en castellano. */
     for (const prop in mapping) {
       const pacienteProperty = mapping[prop];
       const pacienteValue = patient[prop];
 
+      /** Si la función no se ha llamado a si misma: */
       if (!property) {
+        /** Verifica si el objeto en inglés tiene informada la propiedad del nodo. */
         if (patient.hasOwnProperty(prop)) {
+          /** Verifica si el equivalente en castellano es una propiedad anidada. */
           if (typeof mapping[prop] === 'object') {
+            /** Si es un objeto se llama a si misma. */
             this.castPaciente(prop, mapping[prop]);
           } else {
+            /** Si no es un objeto le aplica el valor de la propiedad del objeto en
+             *  inglés a la propiedad del objeto en castellano.
+             */
             this.setPacienteValue(pacienteProperty, pacienteValue);
           }
         }
       } else {
+        /** Si se ha llamado a si misma: */
+        /** Verifica si el objeto en inglés tiene informada la propiedad del nodo. */
         if (patient.hasOwnProperty(prop)) {
+          /** Verifica si el equivalente en castellano es una propiedad anidada. */
           if (typeof mapping[prop] === 'object') {
+            /** Si es un objeto se llama a si misma. */
             this.castPaciente(`${property}.${prop}`, mapping[prop]);
           } else {
+            /** Si no es un objeto le aplica el valor de la propiedad del objeto en
+             *  inglés a la propiedad del objeto en castellano.
+             */
             this.setPacienteValue(pacienteProperty, pacienteValue);
           }
         }
@@ -93,7 +127,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     let paciente = this.paciente;
 
     if (propertySplit.length > 1) {
-
       for (let i = 0; i < propertySplit.length; i++) {
         const prop = propertySplit[i];
 
@@ -112,7 +145,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       paciente[property] = value;
     }
   }
-
 
   public ngOnInit(): void {
     //#region 1

@@ -1,7 +1,9 @@
+/* eslint-disable @angular-eslint/directive-selector */
+
 import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[directiva-prueba]'
+  selector: '[directivaPrueba]'
 })
 export class PruebaDirective {
 

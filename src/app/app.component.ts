@@ -1,3 +1,6 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable  @typescript-eslint/no-inferrable-types */
+
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CustomObserverService } from './services/custom-observer.service';
 import { LoggerService } from './services/logger.service';
@@ -17,6 +20,10 @@ import { Patient } from './patient.model';
 
 import mappingJSON from './patient-converter.json';
 
+interface ApiObject {
+  [key: string]: string | ApiObject;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -27,6 +34,31 @@ export class AppComponent implements OnInit, AfterViewInit {
   private patient: any = new Patient();
   private mapping = mappingJSON as any;
   private delimiterChar = '.';
+
+
+
+  private apiResponse: ApiObject = {
+    "Nivel1-A": {
+      "Nivel2-A": {
+        "Nivel3-A": "",
+        "Nivel3-B": ""
+      },
+      "Nivel2-B": {
+        "Nivel3-C": "",
+        "Nivel3-D": ""
+      }
+    },
+    "Nivel1-B": {
+      "Nivel2-C": {
+        "Nivel3-E": "",
+        "Nivel3-F": ""
+      },
+      "Nivel2-D": {
+        "Nivel3-G": "",
+        "Nivel3-H": ""
+      }
+    }
+  };
 
   public constructor(
     private logger: LoggerService,
@@ -44,6 +76,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.castPaciente();
     console.log('patient: ', this.patient);
     console.log('paciente: ', this.paciente);
+
+    const flattenedJson = this.flattenApiObject(this.apiResponse);
+    console.log('flattenedJson: ', flattenedJson);
+
+    const flattenedPaciente = this.flattenApiObject(this.paciente);
+    console.log('flattenedPaciente: ', flattenedPaciente);
   }
 
   /** esta función itera todos los nodos del json de conversión. Busca el equivalente
@@ -229,5 +267,21 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private continua(): void {
     console.log('FIN');
+  }
+
+  private flattenApiObject(apiObj: ApiObject, parentKey: string = ''): { [key: string]: string } {
+    let result: { [key: string]: string } = {};
+
+    for (const key in apiObj) {
+      if (typeof apiObj[key] === 'string') {
+        result[key] = parentKey ? `${parentKey}.${key}` : key;
+      } else {
+        const newParentKey = parentKey ? `${parentKey}.${key}` : key;
+        const nestedResult = this.flattenApiObject(apiObj[key] as ApiObject, newParentKey);
+        result = { ...result, ...nestedResult };
+      }
+    }
+
+    return result;
   }
 }

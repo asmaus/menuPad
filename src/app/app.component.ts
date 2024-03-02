@@ -35,29 +35,27 @@ export class AppComponent implements OnInit, AfterViewInit {
   private mapping = mappingJSON as any;
   private delimiterChar = '.';
 
-
-
   private apiResponse: ApiObject = {
-    "Nivel1-A": {
-      "Nivel2-A": {
-        "Nivel3-A": "",
-        "Nivel3-B": ""
+    'Nivel1-A': {
+      'Nivel2-A': {
+        'Nivel3-A': '',
+        'Nivel3-B': '',
       },
-      "Nivel2-B": {
-        "Nivel3-C": "",
-        "Nivel3-D": ""
-      }
+      'Nivel2-B': {
+        'Nivel3-C': '',
+        'Nivel3-D': '',
+      },
     },
-    "Nivel1-B": {
-      "Nivel2-C": {
-        "Nivel3-E": "",
-        "Nivel3-F": ""
+    'Nivel1-B': {
+      'Nivel2-C': {
+        'Nivel3-E': '',
+        'Nivel3-F': '',
       },
-      "Nivel2-D": {
-        "Nivel3-G": "",
-        "Nivel3-H": ""
-      }
-    }
+      'Nivel2-D': {
+        'Nivel3-G': '',
+        'Nivel3-H': '',
+      },
+    },
   };
 
   public constructor(
@@ -74,14 +72,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     this.castPaciente();
-    console.log('patient: ', this.patient);
-    console.log('paciente: ', this.paciente);
+    this.logger.info('patient: ', this.patient);
+    this.logger.info('paciente: ', this.paciente);
 
     const flattenedJson = this.flattenApiObject(this.apiResponse);
     console.log('flattenedJson: ', flattenedJson);
 
     const flattenedPaciente = this.flattenApiObject(this.paciente);
-    this.downloadFile(flattenedPaciente);
+    /** Descarga el archivo */
+    // this.downloadFile(flattenedPaciente);
     console.log('flattenedPaciente: ', flattenedPaciente);
   }
 
@@ -106,15 +105,15 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (propertySplit.length > 1) {
         for (const part of propertySplit) {
           patient = patient[part];
-          console.warn('patient: ', patient);
+          this.logger.warning('patient: ', patient);
         }
       } else {
         patient = this.patient[property];
-        console.warn('patient: ', patient);
+        this.logger.warning('patient: ', patient);
       }
     }
 
-    console.error('mapping: ', this.mapping);
+    this.logger.success('mapping: ', this.mapping);
     /** Si mapping no existe es que el equivalente en castellano no es un objeto
      *  anidado. Es decir, el nodo en inglés equivale a un nodo sencillo en castellano.
      */
@@ -267,10 +266,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private continua(): void {
-    console.log('FIN');
+    this.logger.success('FIN');
   }
 
-  private flattenApiObject(apiObj: ApiObject, parentKey: string = ''): { [key: string]: string } {
+  private flattenApiObject(
+    apiObj: ApiObject,
+    parentKey: string = ''
+  ): { [key: string]: string } {
     let result: { [key: string]: string } = {};
 
     for (const key in apiObj) {
@@ -278,7 +280,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         result[key] = parentKey ? `${parentKey}.${key}` : key;
       } else {
         const newParentKey = parentKey ? `${parentKey}.${key}` : key;
-        const nestedResult = this.flattenApiObject(apiObj[key] as ApiObject, newParentKey);
+        const nestedResult = this.flattenApiObject(
+          apiObj[key] as ApiObject,
+          newParentKey
+        );
         result = { ...result, ...nestedResult };
       }
     }

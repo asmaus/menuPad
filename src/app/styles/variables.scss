@@ -1,0 +1,7 @@
+$border_radius: 5px;
+
+$header_height: 60px;
+$footer_height: 80px;
+$main_min_height: calc(100vh - $header_height - $footer_height);
+
+$side_bar_width: 250px;

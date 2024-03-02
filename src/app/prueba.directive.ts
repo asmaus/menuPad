@@ -22,9 +22,9 @@ export class PruebaDirective {
       'font-weight': 'bold',
     };
 
-    for (const property of Object.keys(requiredStyles)) {
-      this.element.style.setProperty(property, requiredStyles[property])
-    }
+    // for (const property of Object.keys(requiredStyles)) {
+    //   this.element.style.setProperty(property, requiredStyles[property])
+    // }
 
   }
 

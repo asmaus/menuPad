@@ -1,71 +1,65 @@
-$header_height: 60px;
-$footer_height: 80px;
-$main_min_height: calc(100vh - $header_height - $footer_height);
+@import "./styles/variables";
 
-$side_bar_width: 200px;
-
+* {
+  cursor: default;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 
 .header {
-	background-color: #42a4f5;
-	height: $header_height;
+  background-color: #42a4f5;
+  height: $header_height;
 }
 
 .main {
-	display: flex;
-	flex-direction: row;
-	min-height: $main_min_height;
+  display: flex;
+  flex-direction: row;
+  min-height: $main_min_height;
 
-	.side-bar {
-		background-color: #1565c0;
-		width: $side_bar_width;
-	}
-
-	.content {
-		background-color: #90caf9;
-		width: calc(100% - $side_bar_width);
-	}
+  .content {
+    background-color: #90caf9;
+    width: calc(100% - $side_bar_width);
+  }
 }
 
 .footer {
-	position: fixed;
-	bottom: 0;
-	// bottom: -80px;
-	width: 100%;
-	height: $footer_height;
-	min-height: $footer_height;
+  position: fixed;
+  bottom: 0;
+  // bottom: -80px;
+  width: 100%;
+  height: $footer_height;
+  min-height: $footer_height;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
 
-	// transition: transform 0.3s ease-out;
+  // transition: transform 0.3s ease-out;
 
-	$squareWidth: 50px;
-	$squareWidthHover: 70px;
+  $squareWidth: 50px;
+  $squareWidthHover: 70px;
 
-	// &:hover {
-	// 	transform: translateY(-80px);
-	//   }
+  // &:hover {
+  // 	transform: translateY(-80px);
+  //   }
 
-	.square {
-		background-color: #42a4f5;
-		border-radius: 5px;
-		width: $squareWidth;
-		min-width: $squareWidth;
-		height: $squareWidth;
-		min-height: $squareWidth;
-		transition: all 0.2s ease-in-out;
+  .square {
+    background-color: #42a4f5;
+    border-radius: $border_radius;
+    width: $squareWidth;
+    min-width: $squareWidth;
+    height: $squareWidth;
+    min-height: $squareWidth;
+    transition: all 0.2s ease-in-out;
 
-		&:not(:first-child) {
-			margin-left: 10px;
-		}
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
 
-		&:hover {
-			cursor: pointer;
-			width: $squareWidthHover;
-			height: $squareWidthHover;
-			;
-		}
-	}
+    &:hover {
+      cursor: pointer;
+      width: $squareWidthHover;
+      height: $squareWidthHover;
+    }
+  }
 }

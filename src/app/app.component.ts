@@ -194,9 +194,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (observable2) => {
           console.groupCollapsed(
-            '%cTrazas observable2 %c(haz click para mostrar/ocultar)',
-            'color:#00E676; font-size:1rem;',
-            'color:#00E676; font-size:.6rem; font-weight:100'
+            '%cTrazas observable2%c\n(haz click para mostrar/ocultar)',
+            'color:#00E676; font-size:1rem; background-color:#404040; border-radius:5px; padding:2px 5px;',
+            'color:#00E676; font-size:.6rem; font-weight:100;'
           );
           this.logger.success('El Observable ha respondido correctamente');
           this.logger.success(`observable2 -> result ->`, observable2);
@@ -207,6 +207,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         },
         complete: () => {
           this.logger.info('observable2 -> complete');
+          this.logger.success('observable2 -> complete');
+          this.logger.warning('observable2 -> complete');
+          this.logger.error('observable2 -> complete');
         },
       });
     //#endregion 1

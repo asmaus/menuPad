@@ -194,7 +194,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         next: (observable2) => {
           console.groupCollapsed(
             '%cTrazas observable2%c\n(haz click para mostrar/ocultar)',
-            'color:#00E676; font-size:1rem; background-color:#404040; border-radius:5px; padding:2px 5px;',
+            'color:#00E676; font-size:1rem; background-color:#404040; border-radius:2.5px; padding:2px 5px;',
             'color:#00E676; font-size:.6rem; font-weight:100;'
           );
           this.logger.success('El Observable ha respondido correctamente');

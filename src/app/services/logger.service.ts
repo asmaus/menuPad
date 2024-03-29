@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 declare type LoggerType = 'info' | 'success' | 'warning' | 'error';
 
@@ -18,16 +18,9 @@ export class LoggerService {
     warning: '#FF9100',
     error: '#F44336',
   };
-  private icons = {
-    info: '\u24D8',
-    success: '\u2714',
-    warning: '\u26A0',
-    error: '\u2716',
-  }
   private fontSize = '.8rem';
   private fontFamily = 'Segoe ui';
   private fontWeight = 'light';
-  private iconGroup = '\u2795';
 
   /**
    *
@@ -73,22 +66,15 @@ export class LoggerService {
     this.logWithStyle(message, 'error', param);
   }
 
-  /**
-   *
-   * @param message
-   * @param color
-   * @param param
-   */
   private logWithStyle(message: string, type: LoggerType, param?: any): void {
-    const color = this.colors[type];
-    const icon = this.icons[type];
+    if (!isDevMode) {
+      return;
+    }
 
-    const iconStyle = type !== 'info' ? `color:${color}; font-size:${this.fontSize}; font-weight:${this.fontWeight}; background-color:#404040; border-radius:5px; padding:2px 8.5px; width:3rem;` :
-      `color:${color}; font-size:${this.fontSize}; font-weight:${this.fontWeight}; background-color:#404040; border-radius:5px; padding:2px 6px; width:3rem;`;
+    const color = this.colors[type];
 
     console.log(
-      `%c${icon}%c ${message}`,
-      `${iconStyle}`,
+      `%c${message}`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
       param ?? ''
     );

@@ -72,8 +72,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     this.castPaciente();
-    this.logger.info('patient: ', { component: this.constructor.name, value: this.patient });
-    this.logger.info('paciente: ', { component: this.constructor.name, value: this.paciente });
+    this.logger.info('patient: ', {
+      component: this.constructor.name,
+      value: this.patient,
+    });
+    this.logger.info('paciente: ', {
+      component: this.constructor.name,
+      value: this.paciente,
+    });
 
     const flattenedJson = this.flattenApiObject(this.apiResponse);
     console.log('flattenedJson: ', flattenedJson);
@@ -105,15 +111,24 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (propertySplit.length > 1) {
         for (const part of propertySplit) {
           patient = patient[part];
-          this.logger.warning('patient: ', { component: this.constructor.name, value: patient });
+          this.logger.warning('patient: ', {
+            component: this.constructor.name,
+            value: patient,
+          });
         }
       } else {
         patient = this.patient[property];
-        this.logger.warning('patient: ', { component: this.constructor.name, value: patient });
+        this.logger.warning('patient: ', {
+          component: this.constructor.name,
+          value: patient,
+        });
       }
     }
 
-    this.logger.success('mapping: ', { component: this.constructor.name, value: this.mapping });
+    this.logger.success('mapping: ', {
+      component: this.constructor.name,
+      value: this.mapping,
+    });
     /** Si mapping no existe es que el equivalente en castellano no es un objeto
      *  anidado. Es decir, el nodo en inglés equivale a un nodo sencillo en castellano.
      */
@@ -189,23 +204,43 @@ export class AppComponent implements OnInit, AfterViewInit {
     const observable2$ = this.observerSrv.observable2();
 
     observable2$
-      .pipe(tap(() => this.logger.info('observable2 -> start', { component: this.constructor.name })))
+      .pipe(
+        tap(() =>
+          this.logger.info('observable2 -> start', {
+            component: this.constructor.name,
+          })
+        )
+      )
       .subscribe({
         next: (observable2) => {
-          console.groupCollapsed(
-            '%cTrazas observable2%c\n(haz click para mostrar/ocultar)',
-            'color:#00E676; font-size:1rem; background-color:#404040; border-radius:2.5px; padding:2px 5px;',
-            'color:#00E676; font-size:.6rem; font-weight:100;'
+          this.logger.groupCollapsed(
+            'El Observable ha respondido correctamente',
+            {
+              component: this.constructor.name,
+              group: {
+                groupTitle: 'Trazas observable',
+                action: 'start',
+                type: 'success',
+              },
+            }
           );
-          this.logger.success('El Observable ha respondido correctamente', { component: this.constructor.name });
-          this.logger.success(`observable2 -> result ->`, { component: this.constructor.name, value: observable2 });
-          console.groupEnd();
+          this.logger.groupCollapsed('observable2 -> result ->', {
+            component: this.constructor.name,
+            value: observable2,
+            group: {
+              groupTitle: 'Trazas observable',
+              action: 'end',
+              type: 'success',
+            },
+          });
         },
         error: (error) => {
           this.logger.error(`observable2 -> error ->`, error.message);
         },
         complete: () => {
-          this.logger.info('observable2 -> complete', { component: this.constructor.name });
+          this.logger.info('observable2 -> complete', {
+            component: this.constructor.name,
+          });
         },
       });
     //#endregion 1
@@ -224,15 +259,37 @@ export class AppComponent implements OnInit, AfterViewInit {
       tercerObservable$,
     ]).subscribe({
       next: ([primerObservable, segundoObservable, tercerObservable]) => {
-        console.group(
-          '%cTrazas forkJoin %c(haz click para mostrar/ocultar)',
-          'color:#00E676; font-size:1rem;',
-          'color:#00E676; font-size:.6rem; font-weight:100'
-        );
-        console.log(primerObservable);
-        console.log(segundoObservable);
-        console.log(tercerObservable);
-        console.groupEnd();
+        this.logger.group('Primera traza: ', {
+          value: primerObservable,
+          component: this.constructor.name,
+          group: {
+            groupTitle: 'Trazas forkJoin',
+            action: 'start',
+            type: 'warning',
+          },
+        });
+
+        this.logger.group('Segunda traza: ', {
+          value: segundoObservable,
+          component: this.constructor.name,
+          group: {
+            groupTitle: 'Trazas forkJoin',
+            action: 'intermediate',
+            type: 'info',
+          },
+        });
+
+        setTimeout(() => {
+          this.logger.group('Última traza: ', {
+            value: tercerObservable,
+            component: this.constructor.name,
+            group: {
+              groupTitle: 'Trazas forkJoin',
+              action: 'end',
+              type: 'success',
+            },
+          });
+        }, 2000);
       },
     });
     //#endregion 2

@@ -2,12 +2,11 @@ import { Injectable, isDevMode } from '@angular/core';
 
 declare type LoggerType = 'info' | 'success' | 'warning' | 'error';
 
-/**
- *
- *
- * @export
- * @class LoggerService
- */
+export interface Param {
+  value?: any,
+  component?: any
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,53 +19,27 @@ export class LoggerService {
   };
   private fontSize = '.8rem';
   private fontFamily = 'Segoe ui';
-  private fontWeight = 'light';
+  private fontWeight = '500';
 
-  /**
-   *
-   *
-   * @param {string} message
-   * @param {*} [param]
-   * @memberof LoggerService
-   */
-  public info(message: string, param?: any): void {
-    this.logWithStyle(message, 'info', param);
+  public info(message: string, params: Param): void {
+    this.logWithStyle(message, 'info', params);
   }
 
-  /**
-   *
-   *
-   * @param {string} message
-   * @param {*} [param]
-   * @memberof LoggerService
-   */
-  public success(message: string, param?: any): void {
-    this.logWithStyle(message, 'success', param);
+  public success(message: string, params: Param): void {
+    this.logWithStyle(message, 'success', params);
   }
 
-  /**
-   *
-   *
-   * @param {string} message
-   * @param {*} [param]
-   * @memberof LoggerService
-   */
-  public warning(message: string, param?: any): void {
-    this.logWithStyle(message, 'warning', param);
+  public warning(message: string, params: Param): void {
+    this.logWithStyle(message, 'warning', params);
   }
 
-  /**
-   *
-   *
-   * @param {string} message
-   * @param {*} [param]
-   * @memberof LoggerService
-   */
-  public error(message: string, param?: any): void {
-    this.logWithStyle(message, 'error', param);
+  public error(message: string, params: Param): void {
+    this.logWithStyle(message, 'error', params);
   }
 
-  private logWithStyle(message: string, type: LoggerType, param?: any): void {
+  private logWithStyle(message: string, type: LoggerType, params: Param): void {
+    // console.time('ini');
+
     if (!isDevMode) {
       return;
     }
@@ -74,9 +47,12 @@ export class LoggerService {
     const color = this.colors[type];
 
     console.log(
-      `%c${message}`,
+      `%c[${new Date().toLocaleTimeString()}] - ${params?.component}\n%c${message}`,
+      `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
-      param ?? ''
+      params?.value ?? ''
     );
+
+    // console.timeEnd('ini')
   }
 }

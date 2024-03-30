@@ -72,8 +72,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     this.castPaciente();
-    this.logger.info('patient: ', this.patient);
-    this.logger.info('paciente: ', this.paciente);
+    this.logger.info('patient: ', { component: this.constructor.name, value: this.patient });
+    this.logger.info('paciente: ', { component: this.constructor.name, value: this.paciente });
 
     const flattenedJson = this.flattenApiObject(this.apiResponse);
     console.log('flattenedJson: ', flattenedJson);
@@ -105,15 +105,15 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (propertySplit.length > 1) {
         for (const part of propertySplit) {
           patient = patient[part];
-          this.logger.warning('patient: ', patient);
+          this.logger.warning('patient: ', { component: this.constructor.name, value: patient });
         }
       } else {
         patient = this.patient[property];
-        this.logger.warning('patient: ', patient);
+        this.logger.warning('patient: ', { component: this.constructor.name, value: patient });
       }
     }
 
-    this.logger.success('mapping: ', this.mapping);
+    this.logger.success('mapping: ', { component: this.constructor.name, value: this.mapping });
     /** Si mapping no existe es que el equivalente en castellano no es un objeto
      *  anidado. Es decir, el nodo en inglés equivale a un nodo sencillo en castellano.
      */
@@ -189,7 +189,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const observable2$ = this.observerSrv.observable2();
 
     observable2$
-      .pipe(tap(() => this.logger.info('observable2 -> start')))
+      .pipe(tap(() => this.logger.info('observable2 -> start', { component: this.constructor.name })))
       .subscribe({
         next: (observable2) => {
           console.groupCollapsed(
@@ -197,18 +197,15 @@ export class AppComponent implements OnInit, AfterViewInit {
             'color:#00E676; font-size:1rem; background-color:#404040; border-radius:2.5px; padding:2px 5px;',
             'color:#00E676; font-size:.6rem; font-weight:100;'
           );
-          this.logger.success('El Observable ha respondido correctamente');
-          this.logger.success(`observable2 -> result ->`, observable2);
+          this.logger.success('El Observable ha respondido correctamente', { component: this.constructor.name });
+          this.logger.success(`observable2 -> result ->`, { component: this.constructor.name, value: observable2 });
           console.groupEnd();
         },
         error: (error) => {
           this.logger.error(`observable2 -> error ->`, error.message);
         },
         complete: () => {
-          this.logger.info('observable2 -> complete');
-          this.logger.success('observable2 -> complete');
-          this.logger.warning('observable2 -> complete');
-          this.logger.error('observable2 -> complete');
+          this.logger.info('observable2 -> complete', { component: this.constructor.name });
         },
       });
     //#endregion 1
@@ -269,7 +266,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private continua(): void {
-    this.logger.success('FIN');
+    this.logger.success('FIN', { component: this.constructor.name });
   }
 
   private flattenApiObject(

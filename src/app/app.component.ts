@@ -206,8 +206,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     observable2$
       .pipe(
         tap(() =>
-          this.logger.info('observable2 -> start', {
+          this.logger.groupCollapsed('observable2 -> start', {
             component: this.constructor.name,
+            group: {
+              groupTitle: 'Trazas observable',
+              action: 'start',
+              type: 'info',
+            },
           })
         )
       )
@@ -229,7 +234,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             value: observable2,
             group: {
               groupTitle: 'Trazas observable',
-              action: 'end',
+              action: 'intermediate',
               type: 'success',
             },
           });
@@ -238,8 +243,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.logger.error(`observable2 -> error ->`, error.message);
         },
         complete: () => {
-          this.logger.info('observable2 -> complete', {
+          this.logger.groupCollapsed('observable2 -> complete', {
             component: this.constructor.name,
+            group: {
+              groupTitle: 'Trazas observable',
+              action: 'end',
+              type: 'info',
+            },
           });
         },
       });

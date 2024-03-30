@@ -135,6 +135,13 @@ export class LoggerService {
       return;
     }
 
+    /*
+    console.time(); y console.timeEnd(); no dejan añadir/pesonalizar texto.
+    Usar trazas de tiempo como en el ejemplo del interceptor de traducción.
+    - guardar las trazas de tiempo en los params del mensaje (como se hace)
+    - en los console group.
+    */
+
     switch (params.elapsedTime.action) {
       case 'start':
         break;
@@ -210,5 +217,7 @@ export class LoggerService {
     }
 
     console.groupEnd();
+
+    this.groups.splice(index, 1);
   }
 }

@@ -1,10 +1,25 @@
 import { Injectable, isDevMode } from '@angular/core';
 
+/* Decorador para habilitar métodos solo en modo de desarrollo. */
+function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function (...args: any[]) {
+    if (!isDevMode()) {
+      return;
+    }
+
+    return originalMethod.apply(this, args);
+  };
+
+  return descriptor;
+}
+
 declare type LoggerType = 'info' | 'success' | 'warning' | 'error';
 
 export interface Param {
   value?: any;
-  component: any;
+  componentName: any;
 }
 
 export interface ParamWithGroup extends Param {
@@ -15,16 +30,20 @@ export interface ParamWithGroup extends Param {
   };
 }
 
-export interface ParamWithElapsedTime extends Param {
-  elapsedTime: {
+export interface ParamWithTimer extends Param {
+  timer: {
     label: string;
-    action: 'start' | 'end';
   };
 }
 
 interface Group {
   groupTitle: string;
-  params: Param[];
+  params: ParamWithGroup[];
+}
+
+interface Timer {
+  label: string;
+  params: ParamWithTimer;
 }
 
 @Injectable({
@@ -42,29 +61,43 @@ export class LoggerService {
   private fontWeight = '500';
 
   private groups: Group[] = [];
+  private TimerLabels: Timer[] = [];
 
-  //TODO Almacenará las etiquetas identificativas de los console.time/console.timeEnd.
-  private elapsedTimeLabels: string[] = [];
+  constructor() {
+    /* Verifica si existe la cookie y si no existe la crea. */
+    const cookieName = 'nfm-logger';
+    const defaultValue = { disabledLogs: [] };
+    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${cookieName}=`));
+
+    if (!existingCookie) {
+      document.cookie = `${cookieName}=${JSON.stringify(defaultValue)};path=/`;
+    }
+  }
 
   //#region Básicos.
+  @DevModeOnly
   public info(message: string, params: Param): void {
     this.logWithStyle(message, 'info', params);
   }
 
+  @DevModeOnly
   public success(message: string, params: Param): void {
     this.logWithStyle(message, 'success', params);
   }
 
+  @DevModeOnly
   public warning(message: string, params: Param): void {
     this.logWithStyle(message, 'warning', params);
   }
 
+  @DevModeOnly
   public error(message: string, params: Param): void {
     this.logWithStyle(message, 'error', params);
   }
   //#endregion Básicos
 
   //#region Console group.
+  @DevModeOnly
   public group(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -77,6 +110,7 @@ export class LoggerService {
     }
   }
 
+  @DevModeOnly
   public groupCollapsed(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -90,16 +124,10 @@ export class LoggerService {
   }
 
   private manageGroup(message: string, params: ParamWithGroup): void {
-    const groupFound = this.groups.find(
-      (item) => item.groupTitle === params.group?.groupTitle
-    );
+    const groupFound = this.groups.find((item) => item.groupTitle === params.group?.groupTitle);
 
-    if (
-      !groupFound &&
-      (params.group?.action === 'intermediate' ||
-        params.group?.action === 'end')
-    ) {
-      console.error(`No se ha encontrado el grupo ${params.group.groupTitle}.`);
+    if (!groupFound && (params.group?.action === 'intermediate' || params.group?.action === 'end')) {
+      console.error(`No se ha encontrado el grupo '${params.group.groupTitle}'.`);
       return;
     }
 
@@ -127,64 +155,58 @@ export class LoggerService {
   //#endregion Console group
 
   //#region Calcula tiempos de ejecución.
-  public calculateElapsedTime(
-    message: string,
-    params: ParamWithElapsedTime
-  ): void {
-    if (!params.elapsedTime) {
+  @DevModeOnly
+  public timeStart(message: string, params: ParamWithTimer): void {
+    if (!params.timer) {
       return;
     }
 
-    /*
-    console.time(); y console.timeEnd(); no dejan añadir/pesonalizar texto.
-    Usar trazas de tiempo como en el ejemplo del interceptor de traducción.
-    - guardar las trazas de tiempo en los params del mensaje (como se hace)
-    - en los console group.
-    */
+    const timerLabelFound = this.TimerLabels.find((item) => item.label === params.timer.label);
 
-    switch (params.elapsedTime.action) {
-      case 'start':
-        break;
-
-      case 'end':
-        break;
-
-      default:
-        break;
+    if (timerLabelFound) {
+      console.error(`El grupo '${params.timer.label}' ya existe.`);
+      return;
     }
+
+    this.TimerLabels.push({
+      label: params.timer.label,
+      params: Object.assign(params, {
+        ...params,
+        message,
+        time: new Date(),
+      }),
+    });
+  }
+
+  @DevModeOnly
+  public timeEnd(params: ParamWithTimer): void {
+    const index = this.TimerLabels.findIndex((item) => item.label === params.timer.label);
+
+    if (index < 0) {
+      console.error(`No se ha encontrado el grupo '${params.timer.label}'.`);
+      return;
+    }
+
+    this.logTimerWithStyle(index);
   }
   //#endregion Calcula tiempos de ejecución.
 
   private logWithStyle(message: string, type: LoggerType, params: Param): void {
-    if (!isDevMode) {
-      return;
-    }
-
     const color = this.colors[type];
 
     console.log(
-      `%c[${new Date().toLocaleTimeString()}] - ${
-        params?.component
-      }\n%c${message}`,
+      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName}\n%c${message}`,
       `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
       params?.value ?? ''
     );
   }
 
-  private logGroupWithStyle(
-    groupTitle: string,
-    groupType: 'expanded' | 'collapsed'
-  ): void {
-    if (!isDevMode) {
-      return;
-    }
-
-    const index = this.groups.findIndex(
-      (item) => item.groupTitle === groupTitle
-    );
+  private logGroupWithStyle(groupTitle: string, groupType: 'expanded' | 'collapsed'): void {
+    const index = this.groups.findIndex((item) => item.groupTitle === groupTitle);
 
     if (index < 0) {
+      console.error(`No se ha encontrado el grupo '${groupTitle}'.`);
       return;
     }
 
@@ -209,7 +231,7 @@ export class LoggerService {
       const color = this.colors[param.group.type as LoggerType];
 
       console.log(
-        `%c[${param.time}] - ${param.component}\n%c${param.message}`,
+        `%c[${param.time}] - ${param.componentName}\n%c${param.message}`,
         `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
         `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
         param.value ?? ''
@@ -219,5 +241,23 @@ export class LoggerService {
     console.groupEnd();
 
     this.groups.splice(index, 1);
+  }
+
+  private logTimerWithStyle(index: number): void {
+    const color = this.colors.info;
+    const timer = this.TimerLabels[index] as any;
+    const elapsedTime = ((new Date().getTime() - (timer.params.time as Date).getTime()) / 1000).toFixed(3);
+
+    const params = timer.params;
+
+    console.log(
+      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName}\n%cEl proceso '${
+        params.message
+      }' ha tardado ${elapsedTime} segundos en completarse`,
+      `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
+      `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`
+    );
+
+    this.TimerLabels.splice(index, 1);
   }
 }

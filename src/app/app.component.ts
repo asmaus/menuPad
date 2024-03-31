@@ -71,14 +71,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.patient.builder.patern.pg.pageName = 'info';
   }
   ngAfterViewInit(): void {
+    this.logger.timeStart('Duración de castPaciente()', {
+      componentName: this.constructor.name,
+      timer: {
+        label: 'castPaciente',
+      },
+    });
     this.castPaciente();
     this.logger.info('patient: ', {
-      component: this.constructor.name,
+      componentName: this.constructor.name,
       value: this.patient,
     });
     this.logger.info('paciente: ', {
-      component: this.constructor.name,
+      componentName: this.constructor.name,
       value: this.paciente,
+    });
+    this.logger.timeEnd({
+      componentName: this.constructor.name,
+      timer: {
+        label: 'castPaciente',
+      },
     });
 
     const flattenedJson = this.flattenApiObject(this.apiResponse);
@@ -112,21 +124,21 @@ export class AppComponent implements OnInit, AfterViewInit {
         for (const part of propertySplit) {
           patient = patient[part];
           this.logger.warning('patient: ', {
-            component: this.constructor.name,
+            componentName: this.constructor.name,
             value: patient,
           });
         }
       } else {
         patient = this.patient[property];
         this.logger.warning('patient: ', {
-          component: this.constructor.name,
+          componentName: this.constructor.name,
           value: patient,
         });
       }
     }
 
     this.logger.success('mapping: ', {
-      component: this.constructor.name,
+      componentName: this.constructor.name,
       value: this.mapping,
     });
     /** Si mapping no existe es que el equivalente en castellano no es un objeto
@@ -207,7 +219,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       .pipe(
         tap(() =>
           this.logger.groupCollapsed('observable2 -> start', {
-            component: this.constructor.name,
+            componentName: this.constructor.name,
             group: {
               groupTitle: 'Trazas observable',
               action: 'start',
@@ -221,7 +233,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.logger.groupCollapsed(
             'El Observable ha respondido correctamente',
             {
-              component: this.constructor.name,
+              componentName: this.constructor.name,
               group: {
                 groupTitle: 'Trazas observable',
                 action: 'start',
@@ -230,7 +242,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           );
           this.logger.groupCollapsed('observable2 -> result ->', {
-            component: this.constructor.name,
+            componentName: this.constructor.name,
             value: observable2,
             group: {
               groupTitle: 'Trazas observable',
@@ -244,7 +256,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         },
         complete: () => {
           this.logger.groupCollapsed('observable2 -> complete', {
-            component: this.constructor.name,
+            componentName: this.constructor.name,
             group: {
               groupTitle: 'Trazas observable',
               action: 'end',
@@ -271,7 +283,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       next: ([primerObservable, segundoObservable, tercerObservable]) => {
         this.logger.group('Primera traza: ', {
           value: primerObservable,
-          component: this.constructor.name,
+          componentName: this.constructor.name,
           group: {
             groupTitle: 'Trazas forkJoin',
             action: 'start',
@@ -281,7 +293,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         this.logger.group('Segunda traza: ', {
           value: segundoObservable,
-          component: this.constructor.name,
+          componentName: this.constructor.name,
           group: {
             groupTitle: 'Trazas forkJoin',
             action: 'intermediate',
@@ -292,7 +304,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.logger.group('Última traza: ', {
             value: tercerObservable,
-            component: this.constructor.name,
+            componentName: this.constructor.name,
             group: {
               groupTitle: 'Trazas forkJoin',
               action: 'end',
@@ -333,7 +345,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private continua(): void {
-    this.logger.success('FIN', { component: this.constructor.name });
+    this.logger.success('FIN', { componentName: this.constructor.name });
   }
 
   private flattenApiObject(

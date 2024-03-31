@@ -18,8 +18,9 @@ function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescr
 declare type LoggerType = 'info' | 'success' | 'warning' | 'error';
 
 export interface Param {
+  componentName: string;
+  methodName: string;
   value?: any;
-  componentName: any;
 }
 
 export interface ParamWithGroup extends Param {
@@ -195,7 +196,7 @@ export class LoggerService {
     const color = this.colors[type];
 
     console.log(
-      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName}\n%c${message}`,
+      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName} - ${params?.methodName}\n%c${message}`,
       `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
       params?.value ?? ''
@@ -231,7 +232,7 @@ export class LoggerService {
       const color = this.colors[param.group.type as LoggerType];
 
       console.log(
-        `%c[${param.time}] - ${param.componentName}\n%c${param.message}`,
+        `%c[${param.time}] - ${param.componentName} - ${param.methodName}\n%c${param.message}`,
         `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
         `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
         param.value ?? ''
@@ -251,7 +252,7 @@ export class LoggerService {
     const params = timer.params;
 
     console.log(
-      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName}\n%cEl proceso '${
+      `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName} - ${params?.methodName}\n%cEl proceso '${
         params.message
       }' ha tardado ${elapsedTime} segundos en completarse`,
       `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,

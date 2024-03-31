@@ -15,6 +15,7 @@ function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescr
   return descriptor;
 }
 
+/* Decorador para verificar si los logs del componente o del método están deshabilitados. */
 function CheckDisabledLogs(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
 
@@ -24,31 +25,30 @@ function CheckDisabledLogs(target: any, propertyKey: string, descriptor: Propert
     }
 
     /* Verifica si existe la cookie y si no existe la crea. */
-    const cookieName = 'nfm-logger';
-    const defaultValue = { disabledComponents: [], disabledMethods: [] };
-    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${cookieName}=`));
+    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`));
 
     if (!existingCookie) {
-      document.cookie = `${cookieName}=${JSON.stringify(defaultValue)};path=/`;
+      LoggerService.setCookie();
     }
 
     const params = args.length > 1 ? args[1] : args[0];
-    const componentName = params.componentName;
-    const methodName = params.methodName;
-
     const cookieValue = document.cookie
       .split(';')
-      .find((cookie) => cookie.trim().startsWith(`${cookieName}=`))
+      .find((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`))
       ?.split('=')[1];
 
     if (cookieValue) {
-      //TODO Hacer un newSet de los arrays para eliminar duplicados.
-      //TODO Hacer métodos publicos para quitar y meter en los arrays, y otro de info para ver lo que hay dentro.
       //TODO Crear snippets.
       //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
-      const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
+      let { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
+      const updatedCookieValue = {
+        disabledComponents: [...new Set(disabledComponents)],
+        disabledMethods: [...new Set(disabledMethods)],
+      };
 
-      if (disabledComponents.includes(componentName) || disabledMethods.includes(methodName)) {
+      LoggerService.setCookie(updatedCookieValue);
+
+      if (disabledComponents.includes(params.componentName) || disabledMethods.includes(params.methodName)) {
         return;
       }
     }
@@ -95,6 +95,9 @@ interface Timer {
   providedIn: 'root',
 })
 export class LoggerService {
+  public static cookieName = 'nfm-logger';
+  public cookieValue!: string | undefined;
+
   private colors = {
     info: '#29B6F6',
     success: '#00E676',
@@ -107,6 +110,13 @@ export class LoggerService {
 
   private groups: Group[] = [];
   private TimerLabels: Timer[] = [];
+
+  constructor() {
+    this.cookieValue = document.cookie
+      .split(';')
+      .find((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`))
+      ?.split('=')[1];
+  }
 
   //#region Básicos.
   @DevModeOnly
@@ -233,6 +243,7 @@ export class LoggerService {
   }
   //#endregion Calcula tiempos de ejecución.
 
+  //#region Comunes
   private logWithStyle(message: string, type: LoggerType, params: Param): void {
     const color = this.colors[type];
 
@@ -302,4 +313,85 @@ export class LoggerService {
 
     this.TimerLabels.splice(index, 1);
   }
+  //#endregion Comunes
+
+  //#region Gestión
+  public _disableComponentLogs(componentName: string): void {
+    if (this.cookieValue) {
+      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      disabledComponents.push(componentName);
+
+      const updatedCookieValue = {
+        disabledComponents: [...new Set(disabledComponents)],
+        disabledMethods,
+      };
+      console.warn(updatedCookieValue);
+
+      LoggerService.setCookie(updatedCookieValue);
+    }
+  }
+
+  public _disableMethodLogs(methodName: string): void {
+    if (this.cookieValue) {
+      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      disabledMethods.push(methodName);
+
+      const updatedCookieValue = {
+        disabledComponents,
+        disabledMethods: [...new Set(disabledMethods)],
+      };
+
+      LoggerService.setCookie(updatedCookieValue);
+    }
+  }
+  public _enableComponentLogs(componentName: string): void {
+    if (this.cookieValue) {
+      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const index = disabledComponents.findIndex((cName: string) => cName === componentName);
+
+      if (index > -1) {
+        disabledComponents.splice(index, 1);
+      }
+
+      const updatedCookieValue = {
+        disabledComponents: [...new Set(disabledComponents)],
+        disabledMethods,
+      };
+      //FIXME No se actualiza
+      console.warn('updatedCookieValue: ', updatedCookieValue);
+      LoggerService.setCookie(updatedCookieValue);
+    }
+  }
+  public _enableMethodLogs(methodName: string): void {
+    if (this.cookieValue) {
+      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const index = disabledMethods.findIndex((mName: string) => mName === methodName);
+
+      if (index > -1) {
+        disabledMethods.splice(index, 1);
+      }
+
+      const updatedCookieValue = {
+        disabledComponents,
+        disabledMethods: [...new Set(disabledMethods)],
+      };
+
+      LoggerService.setCookie(updatedCookieValue);
+    }
+  }
+  public _getDisablesList(): void {
+    if (this.cookieValue) {
+      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      console.log('_getDisablesList() ', { disabledComponents, disabledMethods });
+    }
+  }
+  //#endregion Gestión
+
+  //#region Internal
+  public static setCookie(value = { disabledComponents: [], disabledMethods: [] } as any): void {
+    var currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    document.cookie = `${this.cookieName}=${JSON.stringify(value)}; expires=${currentDate.toUTCString()}`;
+  }
+  //#endregion Internal
 }

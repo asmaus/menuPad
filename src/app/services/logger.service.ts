@@ -15,6 +15,46 @@ function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescr
   return descriptor;
 }
 
+function CheckDisabledLogs(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function (...args: any[]) {
+    if (!isDevMode()) {
+      return;
+    }
+
+    /* Verifica si existe la cookie y si no existe la crea. */
+    const cookieName = 'nfm-logger';
+    const defaultValue = { disabledComponents: [], disabledMethods: [] };
+    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${cookieName}=`));
+
+    if (!existingCookie) {
+      document.cookie = `${cookieName}=${JSON.stringify(defaultValue)};path=/`;
+    }
+
+    const params = args.length > 1 ? args[1] : args[0];
+    const componentName = params.componentName;
+    const methodName = params.methodName;
+
+    const cookieValue = document.cookie
+      .split(';')
+      .find((cookie) => cookie.trim().startsWith(`${cookieName}=`))
+      ?.split('=')[1];
+
+    if (cookieValue) {
+      const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
+
+      if (disabledComponents.includes(componentName) || disabledMethods.includes(methodName)) {
+        return;
+      }
+    }
+
+    return originalMethod.apply(this, args);
+  };
+
+  return descriptor;
+}
+
 declare type LoggerType = 'info' | 'success' | 'warning' | 'error';
 
 export interface Param {
@@ -64,34 +104,27 @@ export class LoggerService {
   private groups: Group[] = [];
   private TimerLabels: Timer[] = [];
 
-  constructor() {
-    /* Verifica si existe la cookie y si no existe la crea. */
-    const cookieName = 'nfm-logger';
-    const defaultValue = { disabledComponents: [], disabledMethods: [] };
-    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${cookieName}=`));
-
-    if (!existingCookie) {
-      document.cookie = `${cookieName}=${JSON.stringify(defaultValue)};path=/`;
-    }
-  }
-
   //#region Básicos.
   @DevModeOnly
+  @CheckDisabledLogs
   public info(message: string, params: Param): void {
     this.logWithStyle(message, 'info', params);
   }
 
   @DevModeOnly
+  @CheckDisabledLogs
   public success(message: string, params: Param): void {
     this.logWithStyle(message, 'success', params);
   }
 
   @DevModeOnly
+  @CheckDisabledLogs
   public warning(message: string, params: Param): void {
     this.logWithStyle(message, 'warning', params);
   }
 
   @DevModeOnly
+  @CheckDisabledLogs
   public error(message: string, params: Param): void {
     this.logWithStyle(message, 'error', params);
   }
@@ -99,6 +132,7 @@ export class LoggerService {
 
   //#region Console group.
   @DevModeOnly
+  @CheckDisabledLogs
   public group(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -112,6 +146,7 @@ export class LoggerService {
   }
 
   @DevModeOnly
+  @CheckDisabledLogs
   public groupCollapsed(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -157,6 +192,7 @@ export class LoggerService {
 
   //#region Calcula tiempos de ejecución.
   @DevModeOnly
+  @CheckDisabledLogs
   public timeStart(message: string, params: ParamWithTimer): void {
     if (!params.timer) {
       return;
@@ -180,6 +216,7 @@ export class LoggerService {
   }
 
   @DevModeOnly
+  @CheckDisabledLogs
   public timeEnd(params: ParamWithTimer): void {
     const index = this.TimerLabels.findIndex((item) => item.label === params.timer.label);
 

@@ -42,6 +42,10 @@ function CheckDisabledLogs(target: any, propertyKey: string, descriptor: Propert
       ?.split('=')[1];
 
     if (cookieValue) {
+      //TODO Hacer un newSet de los arrays para eliminar duplicados.
+      //TODO Hacer métodos publicos para quitar y meter en los arrays, y otro de info para ver lo que hay dentro.
+      //TODO Crear snippets.
+      //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
       const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
 
       if (disabledComponents.includes(componentName) || disabledMethods.includes(methodName)) {

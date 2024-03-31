@@ -67,7 +67,7 @@ export class LoggerService {
   constructor() {
     /* Verifica si existe la cookie y si no existe la crea. */
     const cookieName = 'nfm-logger';
-    const defaultValue = { disabledLogs: [] };
+    const defaultValue = { disabledComponents: [], disabledMethods: [] };
     const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${cookieName}=`));
 
     if (!existingCookie) {

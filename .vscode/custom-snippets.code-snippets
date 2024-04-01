@@ -1,0 +1,67 @@
+{
+  "Crea un log del tipo info, success, warning o error.": {
+    "scope": "typescript",
+    "prefix": "nfm-log",
+    "body": [
+      "this.logger.${1|info,success,warning,error|}('${2:message}', {",
+      "\tcomponentName: this.constructor.name,",
+      "\tmethodName: this.${3:methodName}.name,",
+      "\tvalue: ${4:value},",
+      "});",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Crea un log del tipo group o groupCollapsed.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-gr",
+    "body": [
+      "this.logger.${1|group,groupCollapsed|}('${2:message}', {",
+      "\tcomponentName: this.constructor.name,",
+      "\tmethodName: this.${3:methodName}.name,",
+      "\tvalue: ${4:value},",
+      "\tgroup: {",
+      "\t\tgroupTitle: '${5:groupTitle}',",
+      "\t\taction: '${6|start,intermediate,end|}',",
+      "\t\ttype: '${7|info,success,warning,error|}',",
+      "\t},",
+      "});",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Crea un log del tipo timeStart o timeEnd.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-tm",
+    "body": [
+      "this.logger.${1|timeStart,timeEnd|}('${2:message}', {",
+      "\tcomponentName: this.constructor.name,",
+      "\tmethodName: this.${3:methodName}.name,",
+      "\ttimer: {",
+      "\t\tlabel: '${4:label}',",
+      "\t},",
+      "});",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  }
+}
+// ${1/(white)|(red)/${1:+#fff}${2:+#000}/}

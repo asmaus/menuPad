@@ -3,7 +3,7 @@
 
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CustomObserverService } from './services/custom-observer.service';
-import { LoggerService } from './services/logger.service';
+import { NfmLoggerService } from './services/logger.service';
 import { concatMap, delay, forkJoin, from, interval, of, switchMap, takeWhile, tap } from 'rxjs';
 import { Paciente } from './paciente.model';
 import { Patient } from './patient.model';
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     },
   };
 
-  public constructor(private logger: LoggerService, private observerSrv: CustomObserverService) {
+  public constructor(private logger: NfmLoggerService, private observerSrv: CustomObserverService) {
     this.patient.name = 'Pedro';
     this.patient.surname = 'Piqueras';
     this.patient.referer.nameReferer = 'Carlos';

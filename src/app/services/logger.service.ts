@@ -25,16 +25,16 @@ function CheckDisabledLogs(target: any, propertyKey: string, descriptor: Propert
     }
 
     /* Verifica si existe la cookie y si no existe la crea. */
-    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`));
+    const existingCookie = document.cookie.split(';').some((cookie) => cookie.trim().startsWith(`${NfmLoggerService.cookieName}=`));
 
     if (!existingCookie) {
-      LoggerService.setCookie();
+      NfmLoggerService.setCookie();
     }
 
     const params = args.length > 1 ? args[1] : args[0];
     const cookieValue = document.cookie
       .split(';')
-      .find((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`))
+      .find((cookie) => cookie.trim().startsWith(`${NfmLoggerService.cookieName}=`))
       ?.split('=')[1];
 
     if (cookieValue) {
@@ -88,7 +88,7 @@ interface Timer {
 @Injectable({
   providedIn: 'root',
 })
-export class LoggerService {
+export class NfmLoggerService {
   public static cookieName = 'nfm-logger';
   public cookieValue!: string | undefined;
 
@@ -108,7 +108,7 @@ export class LoggerService {
   constructor() {
     this.cookieValue = document.cookie
       .split(';')
-      .find((cookie) => cookie.trim().startsWith(`${LoggerService.cookieName}=`))
+      .find((cookie) => cookie.trim().startsWith(`${NfmLoggerService.cookieName}=`))
       ?.split('=')[1];
   }
 
@@ -315,7 +315,7 @@ export class LoggerService {
       let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       disabledComponents.push(componentName);
 
-      LoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
 
@@ -324,7 +324,7 @@ export class LoggerService {
       let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       disabledMethods.push(methodName);
 
-      LoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _enableComponentLogs(componentName: string): void {
@@ -336,7 +336,7 @@ export class LoggerService {
         disabledComponents.splice(index, 1);
       }
 
-      LoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _enableMethodLogs(methodName: string): void {
@@ -348,7 +348,7 @@ export class LoggerService {
         disabledMethods.splice(index, 1);
       }
 
-      LoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _getDisablesList(): void {

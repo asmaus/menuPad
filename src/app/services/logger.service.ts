@@ -2,14 +2,15 @@ import { Injectable, isDevMode } from '@angular/core';
 
 /* Decorador para habilitar métodos solo en modo de desarrollo. */
 function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  console.warn('DevModeOnly');
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
-    if (!isDevMode()) {
+    if (isDevMode()) {
+      return originalMethod.apply(this, args);
+    } else {
       return;
     }
-
-    return originalMethod.apply(this, args);
   };
 
   return descriptor;
@@ -17,6 +18,7 @@ function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescr
 
 /* Decorador para verificar si los logs del componente o del método están deshabilitados. */
 function CheckDisabledLogs(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  console.warn('CheckDisabledLogs');
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
@@ -113,34 +115,34 @@ export class LoggerService {
   }
 
   //#region Básicos.
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public info(message: string, params: Param): void {
     this.logWithStyle(message, 'info', params);
   }
 
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public success(message: string, params: Param): void {
     this.logWithStyle(message, 'success', params);
   }
 
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public warning(message: string, params: Param): void {
     this.logWithStyle(message, 'warning', params);
   }
 
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public error(message: string, params: Param): void {
     this.logWithStyle(message, 'error', params);
   }
   //#endregion Básicos
 
   //#region Console group.
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public group(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -153,8 +155,8 @@ export class LoggerService {
     }
   }
 
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public groupCollapsed(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -199,8 +201,8 @@ export class LoggerService {
   //#endregion Console group
 
   //#region Calcula tiempos de ejecución.
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public timeStart(message: string, params: ParamWithTimer): void {
     if (!params.timer) {
       return;
@@ -223,8 +225,8 @@ export class LoggerService {
     });
   }
 
-  @DevModeOnly
   @CheckDisabledLogs
+  @DevModeOnly
   public timeEnd(params: ParamWithTimer): void {
     const index = this.TimerLabels.findIndex((item) => item.label === params.timer.label);
 

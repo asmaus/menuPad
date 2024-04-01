@@ -41,12 +41,6 @@ function CheckDisabledLogs(target: any, propertyKey: string, descriptor: Propert
       //TODO Crear snippets.
       //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
       let { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
-      const updatedCookieValue = {
-        disabledComponents: [...new Set(disabledComponents)],
-        disabledMethods: [...new Set(disabledMethods)],
-      };
-
-      LoggerService.setCookie(updatedCookieValue);
 
       if (disabledComponents.includes(params.componentName) || disabledMethods.includes(params.methodName)) {
         return;
@@ -322,7 +316,7 @@ export class LoggerService {
       disabledComponents.push(componentName);
 
       const updatedCookieValue = {
-        disabledComponents: [...new Set(disabledComponents)],
+        disabledComponents,
         disabledMethods,
       };
       console.warn(updatedCookieValue);
@@ -338,7 +332,7 @@ export class LoggerService {
 
       const updatedCookieValue = {
         disabledComponents,
-        disabledMethods: [...new Set(disabledMethods)],
+        disabledMethods,
       };
 
       LoggerService.setCookie(updatedCookieValue);
@@ -354,11 +348,10 @@ export class LoggerService {
       }
 
       const updatedCookieValue = {
-        disabledComponents: [...new Set(disabledComponents)],
+        disabledComponents,
         disabledMethods,
       };
-      //FIXME No se actualiza
-      console.warn('updatedCookieValue: ', updatedCookieValue);
+
       LoggerService.setCookie(updatedCookieValue);
     }
   }
@@ -373,7 +366,7 @@ export class LoggerService {
 
       const updatedCookieValue = {
         disabledComponents,
-        disabledMethods: [...new Set(disabledMethods)],
+        disabledMethods,
       };
 
       LoggerService.setCookie(updatedCookieValue);
@@ -391,7 +384,13 @@ export class LoggerService {
   public static setCookie(value = { disabledComponents: [], disabledMethods: [] } as any): void {
     var currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() + 1);
-    document.cookie = `${this.cookieName}=${JSON.stringify(value)}; expires=${currentDate.toUTCString()}`;
+
+    const updatedCookieValue = {
+      disabledComponents: [...new Set(value.disabledComponents)],
+      disabledMethods: [...new Set(value.disabledMethods)],
+    };
+
+    document.cookie = `${this.cookieName}=${JSON.stringify(updatedCookieValue)}; expires=${currentDate.toUTCString()}`;
   }
   //#endregion Internal
 }

@@ -58,9 +58,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.patient.builder.patern.pg.pageName = 'info';
   }
   ngAfterViewInit(): void {
-    this.logger._enableComponentLogs(this.constructor.name);
-    this.logger._disableMethodLogs(this.ngAfterViewInit.name);
-    this.logger._getDisablesList();
     this.logger.timeStart('Duración de castPaciente()', {
       componentName: this.constructor.name,
       methodName: this.ngAfterViewInit.name,

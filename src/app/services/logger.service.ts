@@ -2,15 +2,14 @@ import { Injectable, isDevMode } from '@angular/core';
 
 /* Decorador para habilitar métodos solo en modo de desarrollo. */
 function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  console.warn('DevModeOnly');
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
-    if (isDevMode()) {
-      return originalMethod.apply(this, args);
-    } else {
+    if (!isDevMode()) {
       return;
     }
+
+    return originalMethod.apply(this, args);
   };
 
   return descriptor;
@@ -18,7 +17,6 @@ function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescr
 
 /* Decorador para verificar si los logs del componente o del método están deshabilitados. */
 function CheckDisabledLogs(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  console.warn('CheckDisabledLogs');
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {

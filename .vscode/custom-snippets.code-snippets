@@ -42,15 +42,36 @@
       "\r"
     ]
   },
-  "Crea un log del tipo timeStart o timeEnd.": {
+  "Crea un log del tipo timeStart.": {
     "scope": "typescript",
-    "prefix": "nfm-log-tm",
+    "prefix": "nfm-log-tm-s",
     "body": [
-      "this.logger.${1|timeStart,timeEnd|}('${2:message}', {",
+      "this.logger.timeStart('${1:message}', {",
       "\tcomponentName: this.constructor.name,",
-      "\tmethodName: this.${3:methodName}.name,",
+      "\tmethodName: this.${2:methodName}.name,",
       "\ttimer: {",
-      "\t\tlabel: '${4:label}',",
+      "\t\tlabel: '${3:label}',",
+      "\t},",
+      "});",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Crea un log del tipo timeEnd.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-tm-e",
+    "body": [
+      "this.logger.timeEnd({",
+      "\tcomponentName: this.constructor.name,",
+      "\tmethodName: this.${1:methodName}.name,",
+      "\ttimer: {",
+      "\t\tlabel: '${2:label}',",
       "\t},",
       "});",
       "$0"

@@ -315,13 +315,7 @@ export class LoggerService {
       let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       disabledComponents.push(componentName);
 
-      const updatedCookieValue = {
-        disabledComponents,
-        disabledMethods,
-      };
-      console.warn(updatedCookieValue);
-
-      LoggerService.setCookie(updatedCookieValue);
+      LoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
 
@@ -330,12 +324,7 @@ export class LoggerService {
       let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       disabledMethods.push(methodName);
 
-      const updatedCookieValue = {
-        disabledComponents,
-        disabledMethods,
-      };
-
-      LoggerService.setCookie(updatedCookieValue);
+      LoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _enableComponentLogs(componentName: string): void {
@@ -347,12 +336,7 @@ export class LoggerService {
         disabledComponents.splice(index, 1);
       }
 
-      const updatedCookieValue = {
-        disabledComponents,
-        disabledMethods,
-      };
-
-      LoggerService.setCookie(updatedCookieValue);
+      LoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _enableMethodLogs(methodName: string): void {
@@ -364,12 +348,7 @@ export class LoggerService {
         disabledMethods.splice(index, 1);
       }
 
-      const updatedCookieValue = {
-        disabledComponents,
-        disabledMethods,
-      };
-
-      LoggerService.setCookie(updatedCookieValue);
+      LoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
   public _getDisablesList(): void {

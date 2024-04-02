@@ -84,9 +84,51 @@
       "\r"
     ]
   },
+  "Desabilita/habilita los logs del componente.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-e/d-comp",
+    "body": [
+      "this.logger.${1|_disableComponentLogs,_enableComponentLogs|}(this.constructor.name);",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Desabilita/habilita los logs del método.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-e/d-meth",
+    "body": [
+      "this.logger.${1|_disableMethodLogs,_enableMethodLogs|}(this.${2:method}.name, this.constructor.name);",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Muestra en consola los logs deshabilitados.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-e/d-get",
+    "body": ["this.logger._getDisablesList();", "$0"],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
   "Cambia la apariencia de los logs.": {
     "scope": "typescript",
-    "prefix": "nfm-log-cfg",
+    "prefix": "nfm-log-cfg-set",
     "body": [
       "this.logger._setConfig({",
       "\tcolors: {",
@@ -109,8 +151,20 @@
   },
   "Restaura la apariencia de los logs.": {
     "scope": "typescript",
-    "prefix": "nfm-log-cfg-r",
+    "prefix": "nfm-log-cfg-rst",
     "body": ["this.logger._restoreConfig();", "$0"],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Muestra en consola la apariencia de los logs.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-cfg-get",
+    "body": ["this.logger._getConfig();", "$0"],
     "description": [
       "Servicio para crear logs en consola.",
       "\r",

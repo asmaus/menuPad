@@ -27,7 +27,7 @@ function DevModeAndLogsEnabled(target: any, propertyKey: string, descriptor: Pro
       //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
       const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
 
-      if (disabledComponents.includes(params.componentName) || disabledMethods.includes(params.methodName)) {
+      if (disabledComponents.includes(params.componentName) || disabledMethods.includes(`${params.componentName}/${params.methodName}`)) {
         return;
       }
     }
@@ -305,7 +305,7 @@ export class NfmLoggerService {
     }
   }
 
-  public _disableMethodLogs(componentName: string, methodName: string): void {
+  public _disableMethodLogs(methodName: string, componentName: string): void {
     if (this.cookieValue) {
       const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       disabledMethods.push(`${componentName}/${methodName}`);
@@ -327,7 +327,7 @@ export class NfmLoggerService {
     }
   }
 
-  public _enableMethodLogs(componentName: string, methodName: string): void {
+  public _enableMethodLogs(methodName: string, componentName: string): void {
     if (this.cookieValue) {
       const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       const index = disabledMethods.findIndex((mName: string) => mName === `${componentName}/${methodName}`);
@@ -342,8 +342,8 @@ export class NfmLoggerService {
 
   public _getDisablesList(): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
-      console.log('_getDisablesList() ', { disabledComponents, disabledMethods, config });
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      console.log('_getDisablesList() ', { disabledComponents, disabledMethods });
     }
   }
 
@@ -369,6 +369,13 @@ export class NfmLoggerService {
       };
 
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
+    }
+  }
+
+  public _getConfig(): void {
+    if (this.cookieValue) {
+      const { config } = JSON.parse(this.cookieValue);
+      console.log('_getConfig() ', { config });
     }
   }
   //#endregion Gestión

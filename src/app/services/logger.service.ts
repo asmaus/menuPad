@@ -23,7 +23,6 @@ function DevModeAndLogsEnabled(target: any, propertyKey: string, descriptor: Pro
       ?.split('=')[1];
 
     if (cookieValue) {
-      //TODO Crear snippets.
       //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
       const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
 

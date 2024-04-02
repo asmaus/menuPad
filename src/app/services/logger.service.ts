@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-/* Decorador para verificar si está en un entorno de desarrollo y si los logs del componente o del método están deshabilitados. */
+/* Decorador para verificar si está en un entorno de desarrollo y si los logs del componente o del método están habilitados. */
 function DevModeAndLogsEnabled(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
 

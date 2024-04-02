@@ -1,22 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-/* Decorador para habilitar métodos solo en modo de desarrollo. */
-function DevModeOnly(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  const originalMethod = descriptor.value;
-
-  descriptor.value = function (...args: any[]) {
-    if (!isDevMode()) {
-      return;
-    }
-
-    return originalMethod.apply(this, args);
-  };
-
-  return descriptor;
-}
-
-/* Decorador para verificar si los logs del componente o del método están deshabilitados. */
-function CheckDisabledLogs(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+/* Decorador para verificar si está en un entorno de desarrollo y si los logs del componente o del método están deshabilitados. */
+function DevModeAndLogsEnabled(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
@@ -40,7 +25,7 @@ function CheckDisabledLogs(target: any, propertyKey: string, descriptor: Propert
     if (cookieValue) {
       //TODO Crear snippets.
       //TODO Crear intellisense. Que los valores de eliminar del array lo obtenga de la cookie.
-      let { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
+      const { disabledComponents, disabledMethods } = JSON.parse(cookieValue);
 
       if (disabledComponents.includes(params.componentName) || disabledMethods.includes(params.methodName)) {
         return;
@@ -110,37 +95,38 @@ export class NfmLoggerService {
       .split(';')
       .find((cookie) => cookie.trim().startsWith(`${NfmLoggerService.cookieName}=`))
       ?.split('=')[1];
+
+    if (this.cookieValue) {
+      const { config } = JSON.parse(this.cookieValue);
+      Object.assign(this.colors, config.colors);
+      this.fontSize = config.fontSize;
+    }
   }
 
   //#region Básicos.
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public info(message: string, params: Param): void {
     this.logWithStyle(message, 'info', params);
   }
 
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public success(message: string, params: Param): void {
     this.logWithStyle(message, 'success', params);
   }
 
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public warning(message: string, params: Param): void {
     this.logWithStyle(message, 'warning', params);
   }
 
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public error(message: string, params: Param): void {
     this.logWithStyle(message, 'error', params);
   }
   //#endregion Básicos
 
   //#region Console group.
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public group(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -153,8 +139,7 @@ export class NfmLoggerService {
     }
   }
 
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public groupCollapsed(message: string, params: ParamWithGroup): void {
     if (!params.group) {
       return;
@@ -199,8 +184,7 @@ export class NfmLoggerService {
   //#endregion Console group
 
   //#region Calcula tiempos de ejecución.
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public timeStart(message: string, params: ParamWithTimer): void {
     if (!params.timer) {
       return;
@@ -223,8 +207,7 @@ export class NfmLoggerService {
     });
   }
 
-  @CheckDisabledLogs
-  @DevModeOnly
+  @DevModeAndLogsEnabled
   public timeEnd(params: ParamWithTimer): void {
     const index = this.TimerLabels.findIndex((item) => item.label === params.timer.label);
 
@@ -240,10 +223,11 @@ export class NfmLoggerService {
   //#region Comunes
   private logWithStyle(message: string, type: LoggerType, params: Param): void {
     const color = this.colors[type];
+    const timeFontSize = `${parseFloat(this.fontSize) - 0.1}rem`;
 
     console.log(
       `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName} - ${params?.methodName}\n%c${message}`,
-      `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
+      `color:${color}; font-size:${timeFontSize}; font-family:${this.fontFamily}; font-weight:200;`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
       params?.value ?? ''
     );
@@ -276,10 +260,11 @@ export class NfmLoggerService {
 
     for (const param of groupFound.params) {
       const color = this.colors[param.group.type as LoggerType];
+      const timeFontSize = `${parseFloat(this.fontSize) - 0.1}rem`;
 
       console.log(
         `%c[${param.time}] - ${param.componentName} - ${param.methodName}\n%c${param.message}`,
-        `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
+        `color:${color}; font-size:${timeFontSize}; font-family:${this.fontFamily}; font-weight:200;`,
         `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`,
         param.value ?? ''
       );
@@ -292,6 +277,7 @@ export class NfmLoggerService {
 
   private logTimerWithStyle(index: number): void {
     const color = this.colors.info;
+    const timeFontSize = `${parseFloat(this.fontSize) - 0.1}rem`;
     const timer = this.TimerLabels[index] as any;
     const elapsedTime = ((new Date().getTime() - (timer.params.time as Date).getTime()) / 1000).toFixed(3);
 
@@ -301,7 +287,7 @@ export class NfmLoggerService {
       `%c[${new Date().toLocaleTimeString()}] - ${params?.componentName} - ${params?.methodName}\n%cEl proceso '${
         params.message
       }' ha tardado ${elapsedTime} segundos en completarse`,
-      `color:${color}; font-size:.7rem; font-family:${this.fontFamily}; font-weight:200;`,
+      `color:${color}; font-size:${timeFontSize}; font-family:${this.fontFamily}; font-weight:200;`,
       `color:${color}; font-size:${this.fontSize}; font-family:${this.fontFamily}; font-weight:${this.fontWeight};`
     );
 
@@ -312,24 +298,25 @@ export class NfmLoggerService {
   //#region Gestión
   public _disableComponentLogs(componentName: string): void {
     if (this.cookieValue) {
-      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       disabledComponents.push(componentName);
 
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
 
-  public _disableMethodLogs(methodName: string): void {
+  public _disableMethodLogs(componentName: string, methodName: string): void {
     if (this.cookieValue) {
-      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
-      disabledMethods.push(methodName);
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      disabledMethods.push(`${componentName}/${methodName}`);
 
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
+
   public _enableComponentLogs(componentName: string): void {
     if (this.cookieValue) {
-      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       const index = disabledComponents.findIndex((cName: string) => cName === componentName);
 
       if (index > -1) {
@@ -339,10 +326,11 @@ export class NfmLoggerService {
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
-  public _enableMethodLogs(methodName: string): void {
+
+  public _enableMethodLogs(componentName: string, methodName: string): void {
     if (this.cookieValue) {
-      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
-      const index = disabledMethods.findIndex((mName: string) => mName === methodName);
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const index = disabledMethods.findIndex((mName: string) => mName === `${componentName}/${methodName}`);
 
       if (index > -1) {
         disabledMethods.splice(index, 1);
@@ -351,22 +339,48 @@ export class NfmLoggerService {
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
     }
   }
+
   public _getDisablesList(): void {
     if (this.cookieValue) {
-      let { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
       console.log('_getDisablesList() ', { disabledComponents, disabledMethods });
+    }
+  }
+
+  public _setConfig(config: any): void {
+    if (this.cookieValue) {
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
+    }
+  }
+
+  public _restoreConfig(): void {
+    if (this.cookieValue) {
+      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const config = {};
+
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }
   }
   //#endregion Gestión
 
   //#region Internal
-  public static setCookie(value = { disabledComponents: [], disabledMethods: [] } as any): void {
-    var currentDate = new Date();
+  public static setCookie(value = { disabledComponents: [], disabledMethods: [], config: {} } as any): void {
+    const currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() + 1);
+
+    if (Object.keys(value.config).length === 0) {
+      value.config = {
+        colors: new NfmLoggerService().colors,
+        fontSize: new NfmLoggerService().fontSize,
+      };
+    }
 
     const updatedCookieValue = {
       disabledComponents: [...new Set(value.disabledComponents)],
       disabledMethods: [...new Set(value.disabledMethods)],
+      config: value.config,
     };
 
     document.cookie = `${this.cookieName}=${JSON.stringify(updatedCookieValue)}; expires=${currentDate.toUTCString()}`;

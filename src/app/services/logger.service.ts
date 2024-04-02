@@ -298,52 +298,52 @@ export class NfmLoggerService {
   //#region Gestión
   public _disableComponentLogs(componentName: string): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       disabledComponents.push(componentName);
 
-      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }
   }
 
   public _disableMethodLogs(componentName: string, methodName: string): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       disabledMethods.push(`${componentName}/${methodName}`);
 
-      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }
   }
 
   public _enableComponentLogs(componentName: string): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       const index = disabledComponents.findIndex((cName: string) => cName === componentName);
 
       if (index > -1) {
         disabledComponents.splice(index, 1);
       }
 
-      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }
   }
 
   public _enableMethodLogs(componentName: string, methodName: string): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
+      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
       const index = disabledMethods.findIndex((mName: string) => mName === `${componentName}/${methodName}`);
 
       if (index > -1) {
         disabledMethods.splice(index, 1);
       }
 
-      NfmLoggerService.setCookie({ disabledComponents, disabledMethods });
+      NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }
   }
 
   public _getDisablesList(): void {
     if (this.cookieValue) {
-      const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
-      console.log('_getDisablesList() ', { disabledComponents, disabledMethods });
+      const { disabledComponents, disabledMethods, config } = JSON.parse(this.cookieValue);
+      console.log('_getDisablesList() ', { disabledComponents, disabledMethods, config });
     }
   }
 
@@ -358,7 +358,15 @@ export class NfmLoggerService {
   public _restoreConfig(): void {
     if (this.cookieValue) {
       const { disabledComponents, disabledMethods } = JSON.parse(this.cookieValue);
-      const config = {};
+      const config = {
+        colors: {
+          info: '#29B6F6',
+          success: '#00E676',
+          warning: '#FF9100',
+          error: '#F44336',
+        },
+        fontSize: '.8rem',
+      };
 
       NfmLoggerService.setCookie({ disabledComponents, disabledMethods, config });
     }

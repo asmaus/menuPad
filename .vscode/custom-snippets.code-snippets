@@ -83,6 +83,40 @@
       "(Librería ngx-infomed)",
       "\r"
     ]
+  },
+  "Cambia la apariencia de los logs.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-cfg",
+    "body": [
+      "this.logger._setConfig({",
+      "\tcolors: {",
+      "\t\tinfo: '${1:#29B6F6}',",
+      "\t\tsuccess: '${2:#00E676}',",
+      "\t\twarning: '${3:#FF9100}',",
+      "\t\terror: '${4:#F44336}',",
+      "\t},",
+      "\tfontSize: '${5:.8rem}'",
+      "})",
+      "$0"
+    ],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
+  },
+  "Restaura la apariencia de los logs.": {
+    "scope": "typescript",
+    "prefix": "nfm-log-cfg-r",
+    "body": ["this.logger._restoreConfig();", "$0"],
+    "description": [
+      "Servicio para crear logs en consola.",
+      "\r",
+      "(NfmLoggerService)",
+      "(Librería ngx-infomed)",
+      "\r"
+    ]
   }
 }
-// ${1/(white)|(red)/${1:+#fff}${2:+#000}/}
